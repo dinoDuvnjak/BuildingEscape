@@ -21,20 +21,25 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//Find the owning actor
+	OwnerRotation = GetOwner(); //declaring a pointer to an actor.
+
+	//Get the player or in this case pawn
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn(); // a pawn is an actor so it inherits from an actor
 
 }
 
 void UOpenDoor::OpenDoor()
 {
-	//Find the owning actor
-	AActor* OwnerRotation = GetOwner(); //declaring a pointer to an actor.
+	// Set the door rotation
+	OwnerRotation->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));//Openangle is a value for a yaw
+}
 
-										// Create a rotator
-	FRotator NewRotation = FRotator(0.0f, 60.0f, 0.0f); //this is a value for a yaw
-
-														// Set the door rotation
-	OwnerRotation->SetActorRotation(NewRotation);
+void UOpenDoor::CloseDoor()
+{
+	// Create a rotator
+	// Set the door rotation
+	OwnerRotation->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
 }
 
 
@@ -43,6 +48,17 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	if (PressurePlate->IsOverlappingActor(ActorThatOpens)) OpenDoor();
+	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	{
+		OpenDoor();
+		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+	}
+	
+	if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorClosedDelay)
+	{
+		CloseDoor();
+	}
+
+	
 }
 
