@@ -21,12 +21,20 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto OwnerRot = GetOwner()->GetActorRotation();
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn(); // a pawn is an actor so it inherits from an actor
 
-	UE_LOG(LogTemp, Warning, TEXT("rotation of the door is %s"), *OwnerRot);
+}
 
-	// ...
-	
+void UOpenDoor::OpenDoor()
+{
+	//Find the owning actor
+	AActor* OwnerRotation = GetOwner(); //declaring a pointer to an actor.
+
+										// Create a rotator
+	FRotator NewRotation = FRotator(0.0f, 60.0f, 0.0f); //this is a value for a yaw
+
+														// Set the door rotation
+	OwnerRotation->SetActorRotation(NewRotation);
 }
 
 
@@ -35,6 +43,6 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	// ...
+	if (PressurePlate->IsOverlappingActor(ActorThatOpens)) OpenDoor();
 }
 
