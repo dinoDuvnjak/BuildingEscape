@@ -25,7 +25,20 @@ private:
 	//The distance that our player can grab away from his body
 	float Reach = 100.f;
 
+	//The component attached on our player / pawn
+	UPhysicsHandleComponent* PhysicsHandle = nullptr;
+	UInputComponent* InputComponent = nullptr;
 
-		
-	
+	// Ray-cast and reach what's in reach, called on key pressed
+	void Grab();
+	// Called on key released
+	void Release();
+	// Find (assumed) attached physics component
+	void FindPhysicsHandleComponent();
+	// Setup (assumed) attached input component
+	void FindInputComponent();
+	// Return hit for first physics body in reach
+	const FHitResult GetFirstPhysicsBodyInReach();
+	// Log the name of the object that we hit 
+	void LogHitResult(FHitResult Hit);
 };
