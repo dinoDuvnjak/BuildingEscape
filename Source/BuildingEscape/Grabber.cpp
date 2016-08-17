@@ -3,7 +3,7 @@
 #include "BuildingEscape.h"
 #include "Grabber.h"
 
-#define OUT
+#define OUT // we define out that is doing nothing just as a reminder that the values changes in engine program that we send as a function parameter.
 
 
 // Sets default values for this component's properties
@@ -39,15 +39,36 @@ void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompon
 	// Get the player view point this tick
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation).ToString(); // we used OUT (don't do anything) macro to know that unreal engine changes the value that we send to the method. This is their error and our reminder.
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation); // we used OUT paramater (don't do anything just as warning to us) macro to know that unreal engine changes the value that we send to the method. This is their error and our reminder.
 
-	PlayerViewPointLocation.ToString();
-	PlayerViewPointRotation.ToString();
+	///UE_LOG(LogTemp, Warning, TEXT("Location is %s, Rotation is a %s"), *PlayerViewPointLocation.ToString(), *PlayerViewPointRotation.ToString()); //TODO LOG This out yourself.
 
-	UE_LOG(LogTemp, Warning, TEXT("%s is player location, %s is a player rotation"), *PlayerViewPointLocation, *PlayerViewPointRotation); //TODO LOG This out yourself.
+	/// Draw a red trace in the world to visualize
+	FVector LineTraceEnd = PlayerViewPointLocation + (PlayerViewPointRotation.Vector() * Reach);
 
-	// Ray-cast out to reach distance
+	DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd, FColor(255, 0, 0), false, 0.f, 0.f, 10.f);
+
+	
+	///Line trace (AKA Ray-cast)out to reach distance
+		///Setup query params
+		FCollisionQueryParams TraceParamaters(FName(TEXT("")), false, GetOwner()); // last parameter we are for ignoring ourself.
+	FHitResult Hit;
+	GetWorld()->LineTraceSingleByObjectType(
+		OUT Hit, 
+		PlayerViewPointLocation, 
+		LineTraceEnd, 
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody), // u zagradama je tip enumerator, ovako mu pristupamo
+		TraceParamaters
+	);
 
 	// See what we hit
+	AActor* ActorHit = Hit.GetActor();
+
+	if (ActorHit) // na ovakvim stvarim auvijek koristiti if uvijet da provjerimo da li postoje posto unreal inace pukne
+	{
+		UE_LOG(LogTemp, Warning, TEXT("tu sam"));
+		UE_LOG(LogTemp, Warning, TEXT("line trace hit %s"), *(ActorHit->GetName())); 
+	}
+
 }
 
