@@ -38,8 +38,6 @@ private:
 	float LastDoorOpenTime;
 
 	AActor* OwnerRotation;
-
-	AActor* ActorThatOpens; //remember pawns inherit from an actor. moze biti i APawn
-
 	
+	float GetTotalMassOFActorsOnPlate();
 };
