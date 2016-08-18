@@ -22,11 +22,6 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!Owner)
-	{ 
-		UE_LOG(LogTemp, Error, TEXT("No owner rotation (OpenDoor.cpp line 27)"), *(GetOwner()->GetName()));
-		return; 
-	};
 	//Find the owning actor
 	Owner = GetOwner(); //declaring a pointer to an actor.
 
@@ -34,14 +29,12 @@ void UOpenDoor::BeginPlay()
 
 void UOpenDoor::OpenDoor()
 {
-	if (!Owner) { return; };
 	// Set the door rotation
 	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));//Openangle is a value for a yaw
 }
 
 void UOpenDoor::CloseDoor()
 {
-	if (!Owner) { return; };
 	// Create a rotator
 	// Set the door rotation
 	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
