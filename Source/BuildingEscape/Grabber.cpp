@@ -32,10 +32,22 @@ void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	//if the physics handle is attached
-		//move the object that we're holding
+	FVector PlayerViewPointLocation;
+	FRotator PlayerViewPointRotation;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation); // we used OUT paramater (don't do anything just as warning to us) macro to know that unreal engine changes the value that we send to the method. This is their error and our reminder.
 
-	GetFirstPhysicsBodyInReach();
+																														  ///UE_LOG(LogTemp, Warning, TEXT("Location is %s, Rotation is a %s"), *PlayerViewPointLocation.ToString(), *PlayerViewPointRotation.ToString()); //TODO LOG This out yourself.
+
+																														  /// Draw a red trace in the world to visualize
+	FVector LineTraceEnd = PlayerViewPointLocation + (PlayerViewPointRotation.Vector() * Reach);
+
+	//if the physics handle is attached - if we lift some object already
+	if (PhysicsHandle->GrabbedComponent)
+	{
+		//move the object that we're holding
+		PhysicsHandle->SetTargetLocation(LineTraceEnd);
+	}
+
 
 }
 
@@ -44,15 +56,24 @@ void UGrabber::Grab()
 	UE_LOG(LogTemp, Warning, TEXT("Sada cu da te ugrabim"));
 
 	// Line trace and Try to reach any actors with physics body collision channel set
+	auto HitResul =	GetFirstPhysicsBodyInReach();
+	auto ComponentToGrab = HitResul.GetComponent();
+	auto ActorHit = HitResul.GetActor();
 
-	// If we hit something then attach a physics handle
-	// TODO attach the physics handle
+	if (ActorHit)
+	{
+		// If we hit something then attach a physics handle
+			// TODO attach the physics handle
+		PhysicsHandle->GrabComponent(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), true);
+	}
+
 }
 
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Sada Pustam"));
-	//TODO release physics handle
+	//release physics handle
+	PhysicsHandle->ReleaseComponent();
 }
 
 /// Look for attached Physics Handle
@@ -95,8 +116,8 @@ const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 
     /// Draw a red trace in the world to visualize
 	FVector LineTraceEnd = PlayerViewPointLocation + (PlayerViewPointRotation.Vector() * Reach);
-
-	DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd, FColor(255, 0, 0), false, 0.f, 0.f, 10.f);
+	/// Ovo cu ostaviti kao primjer kako napraviti debug line, dobro za developnment
+	//DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd, FColor(255, 0, 0), false, 0.f, 0.f, 10.f);
 
 
 	///Line trace (AKA Ray-cast)out to reach distance
