@@ -28,6 +28,8 @@ void UGrabber::BeginPlay()
 // Called every frame
 void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
+	//Pointer Protection
+	if (!PhysicsHandle) { return; }
 	//if the physics handle is attached - if we lift some object already
 	if (PhysicsHandle->GrabbedComponent)
 	{
@@ -47,6 +49,8 @@ void UGrabber::Grab()
 	{
 		// If we hit something then attach a physics handle
 			// Attach the physics handle
+		//Pointer Protection
+		if (!PhysicsHandle) { return; }
 		PhysicsHandle->GrabComponent(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), true);
 	}
 
@@ -54,6 +58,8 @@ void UGrabber::Grab()
 
 void UGrabber::Release()
 {
+	//Pointer Protection
+	if (!PhysicsHandle) { return; }
 	//release physics handle
 	PhysicsHandle->ReleaseComponent();
 }
@@ -61,9 +67,9 @@ void UGrabber::Release()
 /// Look for attached Physics Handle
 void UGrabber::FindPhysicsHandleComponent()
 {
+	//Pointer Protection
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>(); //trazimo komponentu od ownera,odnosno pawna na koji je ova scripta zakacena ovo se zove GENERIC SIGNATURE
-	if (PhysicsHandle)
-	{}
+	if (PhysicsHandle){}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("physics handle component missing on a %S object (grabber.cpp line 34)"), *(GetOwner()->GetName()));

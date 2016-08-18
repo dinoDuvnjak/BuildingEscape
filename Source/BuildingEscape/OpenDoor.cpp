@@ -22,22 +22,29 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!Owner)
+	{ 
+		UE_LOG(LogTemp, Error, TEXT("No owner rotation (OpenDoor.cpp line 27)"), *(GetOwner()->GetName()));
+		return; 
+	};
 	//Find the owning actor
-	OwnerRotation = GetOwner(); //declaring a pointer to an actor.
+	Owner = GetOwner(); //declaring a pointer to an actor.
 
 }
 
 void UOpenDoor::OpenDoor()
 {
+	if (!Owner) { return; };
 	// Set the door rotation
-	OwnerRotation->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));//Openangle is a value for a yaw
+	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));//Openangle is a value for a yaw
 }
 
 void UOpenDoor::CloseDoor()
 {
+	if (!Owner) { return; };
 	// Create a rotator
 	// Set the door rotation
-	OwnerRotation->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
+	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
 }
 
 
@@ -64,12 +71,17 @@ float UOpenDoor::GetTotalMassOFActorsOnPlate()
 	
 	//Find all the overlapping actors
 	TArray<AActor*> OverLappingActors;
+	if (!PressurePlate) 
+	{ 
+		UE_LOG(LogTemp, Error, TEXT("No pressure plate component on a : %s"), *(GetOwner()->GetName()));
+		return TotalMass;
+	}
 	PressurePlate->GetOverlappingActors(OUT OverLappingActors);
 
 	for (auto& Actor : OverLappingActors)
 	{
 		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
-		UE_LOG(LogTemp, Warning, TEXT("Overlaping component : %s"), *Actor->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("Overlaping component : %s"), *Actor->GetName());
 	}
 
 	return TotalMass;

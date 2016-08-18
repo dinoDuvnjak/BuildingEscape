@@ -28,16 +28,15 @@ private:
 	//ovako radimo Upropery makro elemente, treba biti pazljiv s njima jel nemamo autocomplete imoraju biti tocno iznad propertija.
 	UPROPERTY(EditAnywhere)
 		float OpenAngle = 90.0f;
-
 	UPROPERTY(EditAnywhere)
-		ATriggerVolume* PressurePlate; //u pressureplate mozemo dodavati elmente Trigger volume.
+		ATriggerVolume* PressurePlate = nullptr; //u pressureplate mozemo dodavati elmente Trigger volume.
 
 	UPROPERTY(EditAnywhere)
 		float DoorClosedDelay;
 
 	float LastDoorOpenTime;
 
-	AActor* OwnerRotation;
+	AActor* Owner = nullptr;
 	
 	float GetTotalMassOFActorsOnPlate();
 };
