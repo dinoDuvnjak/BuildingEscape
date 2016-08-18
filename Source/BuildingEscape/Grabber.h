@@ -29,6 +29,9 @@ private:
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	UInputComponent* InputComponent = nullptr;
 
+	FVector PlayerViewPointLocation;
+	FRotator PlayerViewPointRotation;
+
 	// Ray-cast and reach what's in reach, called on key pressed
 	void Grab();
 	// Called on key released
@@ -41,4 +44,10 @@ private:
 	const FHitResult GetFirstPhysicsBodyInReach();
 	// Log the name of the object that we hit 
 	void LogHitResult(FHitResult Hit);
+	// Get the reach line end of a player every tick
+	FVector GetReachLineEnd();
+	// Get the player view point every tick
+	FVector GetReachLineStart();
+	// Get the player rotation point every tick
+	FRotator GetThePlayerPointRotation();
 };

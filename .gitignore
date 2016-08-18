@@ -1,9 +1,22 @@
+##########################
+# Unreal Generated Files #
+##########################
+
 Intermediate/
 Build/
 Binaries/
 DerivredDataCache/
 Saved/
 Content/StarterContent/
+
+# ovo je inace praksa kako bi uspjeli sacuvati sve promjene na materijalima i teksturama, ali u ovom projektu nije toliko vazno
+#BuidingEscape/Content/StarterContetnt
+#BuidingEscape/Content/HDRI
+
+######################
+# VS Generated Files #
+######################
+
 *.VC.db
 *.VC.opendb
 *.suo
