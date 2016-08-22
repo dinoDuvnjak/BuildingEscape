@@ -5,6 +5,8 @@
 #include "Components/ActorComponent.h"
 #include "OpenDoor.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDoorRequest);  //blueprint assignable class
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDINGESCAPE_API UOpenDoor : public UActorComponent
@@ -18,8 +20,12 @@ public:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void OpenDoor();
-	void CloseDoor();
+
+	UPROPERTY(BlueprintAssignable)// to be assigned to a blueprint
+	FDoorRequest OnOpen; // initialization of the class
+
+	UPROPERTY(BlueprintAssignable)// to be assigned to a blueprint
+	FDoorRequest OnClose; // initialization of the class
 
 	// Called every frame
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
@@ -27,14 +33,9 @@ public:
 private:
 	//ovako radimo Upropery makro elemente, treba biti pazljiv s njima jel nemamo autocomplete imoraju biti tocno iznad propertija.
 	UPROPERTY(EditAnywhere)
-		float OpenAngle = 90.0f;
+	float TriggerMass = 0.0f;
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume* PressurePlate = nullptr; //u pressureplate mozemo dodavati elmente Trigger volume.
-
-	UPROPERTY(EditAnywhere)
-		float DoorClosedDelay;
-
-	float LastDoorOpenTime;
 
 	AActor* Owner = nullptr;
 	
