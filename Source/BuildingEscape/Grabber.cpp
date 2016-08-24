@@ -52,6 +52,7 @@ void UGrabber::Grab()
 		//Pointer Protection
 		if (!PhysicsHandle) { return; }
 		PhysicsHandle->GrabComponent(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), true);
+		OnGrab.Broadcast();
 	}
 
 }

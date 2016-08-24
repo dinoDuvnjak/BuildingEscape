@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.07.00">
+    <object class="AudioFile" id="{f2bf2480-79d4-45f4-ad59-93a2fde61f32}">
+        <property name="frequencyInKHz">
+            <value>44.0999985</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>5.9328798185941043</value>
+        </property>
+        <property name="audioFilePath">
+            <value>$(AUDIO_BIN_DIR)/piano_hint {2d8faf99-e77c-4b7f-abb7-e3e48bf10b1e}.wav</value>
+        </property>
+        <relationship name="container">
+            <destination>{3b915f57-9c0d-460c-9b35-540bc6a70fa3}</destination>
+        </relationship>
+    </object>
+</objects>
