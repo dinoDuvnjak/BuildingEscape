@@ -50,7 +50,7 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 	OnClose.Broadcast();
 
-	if (GetTotalMassOFActorsOnPlate() > TriggerMass)
+	if (GetTotalMassOFActorsOnPlate() == TriggerMass)
 	{
 		OnOpen.Broadcast();
 	}
@@ -73,7 +73,7 @@ float UOpenDoor::GetTotalMassOFActorsOnPlate()
 	for (auto& Actor : OverLappingActors)
 	{
 		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
-		//UE_LOG(LogTemp, Warning, TEXT("Overlaping component : %s"), *Actor->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("Overlapping component : %s"), *Actor->GetName());
 	}
 
 	return TotalMass;
