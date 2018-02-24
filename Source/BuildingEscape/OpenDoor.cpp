@@ -13,7 +13,10 @@ UOpenDoor::UOpenDoor()
 	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	PressurePlate = nullptr; //u pressureplate mozemo dodavati elmente Trigger volume.
+	Owner = nullptr;
+
+	TriggerMass = 0.0f;
 }
 
 
@@ -27,34 +30,14 @@ void UOpenDoor::BeginPlay()
 
 }
 
-///SAMO PRIMJER KAKO VRSITI ROTACIJU SA KODOM PREMDA JE PUNO LAKSE TO RADITI SA BLU[RITOM JEL IMA UGRADJEN TIMELINE SA BAZIERE CURVE
-//void UOpenDoor::OpenDoor()
-//{
-//	// Set the door rotation
-//	///Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));//Openangle is a value for a yaw
-//	OnOpenRequest.Broadcast(); //sa bluerpintom smo radili rotaciju jel je puno jednostavije iyvesti nego sa kodom
-//}
-//
-//void UOpenDoor::CloseDoor()
-//{
-//	// Create a rotator
-//	// Set the door rotation
-//	///Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
-//	OnCloseRequest.Broadcast();
-//}
-
-
 // Called every frame
 void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 	OnClose.Broadcast();
 
-	if (GetTotalMassOFActorsOnPlate() == TriggerMass)
-	{
+	if (GetTotalMassOFActorsOnPlate() >= TriggerMass)
 		OnOpen.Broadcast();
-	}
-	
 }
 
 float UOpenDoor::GetTotalMassOFActorsOnPlate()

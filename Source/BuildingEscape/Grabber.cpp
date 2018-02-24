@@ -12,7 +12,12 @@ UGrabber::UGrabber()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	bWantsBeginPlay = true;
-	PrimaryComponentTick.bCanEverTick = true;	
+	PrimaryComponentTick.bCanEverTick = true;
+
+	PhysicsHandle = nullptr;
+	InputComponent = nullptr;
+
+	Reach = 100.f;
 }
 
 
@@ -28,6 +33,8 @@ void UGrabber::BeginPlay()
 // Called every frame
 void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
 	//Pointer Protection
 	if (!PhysicsHandle) { return; }
 	//if the physics handle is attached - if we lift some object already
@@ -47,34 +54,27 @@ void UGrabber::Grab()
 
 	if (ActorHit)
 	{
-		// If we hit something then attach a physics handle
-			// Attach the physics handle
-		//Pointer Protection
-		if (!PhysicsHandle) { return; }
+		if (PhysicsHandle == nullptr) { return; }
 		PhysicsHandle->GrabComponent(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), true);
-		OnGrab.Broadcast();
+		OnGrab.Broadcast(); // TODO Do we need this??
 	}
 
 }
 
 void UGrabber::Release()
 {
-	//Pointer Protection
-	if (!PhysicsHandle) { return; }
-	//release physics handle
+	if (PhysicsHandle == nullptr) { return; }
 	PhysicsHandle->ReleaseComponent();
 }
 
-/// Look for attached Physics Handle
+// Look for attached Physics Handle
 void UGrabber::FindPhysicsHandleComponent()
 {
 	//Pointer Protection
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>(); //trazimo komponentu od ownera,odnosno pawna na koji je ova scripta zakacena ovo se zove GENERIC SIGNATURE
-	if (PhysicsHandle){}
-	else
-	{
+
+	if (PhysicsHandle == nullptr)
 		UE_LOG(LogTemp, Error, TEXT("physics handle component missing on a %S object (grabber.cpp line 34)"), *(GetOwner()->GetName()));
-	}
 }
 
 ///Look for attached Input component (only appears at the runtime)
@@ -95,15 +95,15 @@ void UGrabber::FindInputComponent()
 
 const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 {
-	///Line trace (AKA Ray-cast)out to reach distance
-	///Setup query params
-	FCollisionQueryParams TraceParamaters(FName(TEXT("")), false, GetOwner()); // last parameter we are for ignoring ourself.
+	//Line trace (AKA Ray-cast)out to reach distance
+	//Setup query params
+	FCollisionQueryParams TraceParamaters(FName(TEXT("")), false, GetOwner()); 
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByObjectType(
 		OUT HitResult,
 		GetReachLineStart(),
 		GetReachLineEnd(),
-		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody), // u zagradama je tip enumerator, ovako mu pristupamo
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody), 
 		TraceParamaters
 	);
 
@@ -116,7 +116,7 @@ void UGrabber::LogHitResult(FHitResult Hit)
 {
 	AActor* ActorHit = Hit.GetActor();
 
-	if (ActorHit) // na ovakvim pointerima uvijek koristiti if uvijet da provjerimo da li postoje posto unreal inace pukne
+	if (ActorHit)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("line trace hit %s"), *(ActorHit->GetName()));
 	}
@@ -124,11 +124,9 @@ void UGrabber::LogHitResult(FHitResult Hit)
 
 FVector UGrabber::GetReachLineEnd()
 {
-	///UE_LOG(LogTemp, Warning, TEXT("Location is %s, Rotation is a %s"), *PlayerViewPointLocation.ToString(), *PlayerViewPointRotation.ToString());
-	/// Draw a red trace in the world to visualize
+	//UE_LOG(LogTemp, Warning, TEXT("Location is %s, Rotation is a %s"), *PlayerViewPointLocation.ToString(), *PlayerViewPointRotation.ToString());
+	// Draw a red trace in the world to visualize
 	FVector LineTraceEnd = GetReachLineStart() + (GetThePlayerPointRotation().Vector() * Reach);
-	/// Ovo cu ostaviti kao primjer kako napraviti debug line, dobro za developnment
-	//DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd, FColor(255, 0, 0), false, 0.f, 0.f, 10.f);
 	return LineTraceEnd;
 }
 

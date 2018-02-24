@@ -8,7 +8,6 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGrabber);  //blueprint assignable class
 
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDINGESCAPE_API UGrabber : public UActorComponent
 {
@@ -26,14 +25,14 @@ public:
 
 private:
 	//The distance that our player can grab away from his body
-	float Reach = 100.f;
+	float Reach;
 
 	UPROPERTY(BlueprintAssignable)// to be assigned to a blueprint
 	FGrabber OnGrab; // initialization of the class
 
 	//The component attached on our player / pawn
-	UPhysicsHandleComponent* PhysicsHandle = nullptr;
-	UInputComponent* InputComponent = nullptr;
+	UPhysicsHandleComponent* PhysicsHandle;
+	UInputComponent* InputComponent;
 
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;

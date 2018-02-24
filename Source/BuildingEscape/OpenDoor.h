@@ -33,11 +33,12 @@ public:
 private:
 	//ovako radimo Upropery makro elemente, treba biti pazljiv s njima jel nemamo autocomplete imoraju biti tocno iznad propertija.
 	UPROPERTY(EditAnywhere)
-	float TriggerMass = 0.0f;
-	UPROPERTY(EditAnywhere)
-		ATriggerVolume* PressurePlate = nullptr; //u pressureplate mozemo dodavati elmente Trigger volume.
+	float TriggerMass;
 
-	AActor* Owner = nullptr;
+	UPROPERTY(EditAnywhere)
+	ATriggerVolume* PressurePlate; //u pressureplate mozemo dodavati elmente Trigger volume.
+
+	AActor* Owner;
 	
 	float GetTotalMassOFActorsOnPlate();
 };
